@@ -4,12 +4,13 @@ from aiogram.types import Message
 from app.bot.dispatcher import dp
 from app.core.jwt import decode_token
 from app.infra.redis import get_redis
+from app.tasks.llm_tasks import llm_request
 
 
 @dp.message(F.text == "/start")
 async def start_handler(message: Message) -> None:
     await message.answer(
-        "Привет! 👋\n\n"
+        "Привет!\n\n"
         "Я AI-консультант на базе большой языковой модели\n"
         "Для авторизации отправь:\n"
         "/token ВАШ_JWT_ТОКЕН"
@@ -55,8 +56,8 @@ async def token_handler(message: Message) -> None:
 @dp.message(F.text)
 async def text_handler(message: Message) -> None:
     """
-    Обрабатывает обычный текст
-    Пока только проверяем, есть ли сохранённый JWT
+    Проверяет JWT и отправляет LLM-запрос в Celery
+    Сам Telegram handler не вызывает OpenRouter напрямую
     """
     redis = get_redis()
     tg_user_id = message.from_user.id
@@ -79,7 +80,10 @@ async def text_handler(message: Message) -> None:
         )
         return
 
+    llm_request.delay(message.chat.id, message.text)
+
     await message.answer(
-        "Вы авторизованы.\n"
-        "Следующим шагом я буду отправлять ваш запрос в LLM."
+        "Запрос принят в очередь.\n"
+        "Ответ придёт через несколько секунд."
     )
+
