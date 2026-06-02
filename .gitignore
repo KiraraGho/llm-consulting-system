@@ -7,3 +7,4 @@ uv.lock
 requirements.txt
 .ruff_cache/
 .pytest_cache/
+.python-version
