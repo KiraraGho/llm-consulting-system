@@ -12,3 +12,8 @@ Telegram bot service с Celery, Redis и RabbitMQ.
 
 ```bash
 python -m app.main
+
+## Запуск worker
+
+```bash
+celery -A app.infra.celery_app.celery_app worker --loglevel=info
