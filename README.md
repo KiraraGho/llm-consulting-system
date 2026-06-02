@@ -232,7 +232,7 @@ RABBITMQ_URL=amqp://guest:guest@localhost:5672//
 
 ## Telegram Bot
 
-![Telegram Bot](screenshots/telegram_bot.png)
+![Telegram Bot](screenshots/telegrambot.png)
 
 ## RabbitMQ UI
 
